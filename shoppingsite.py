@@ -123,8 +123,9 @@ def add_to_cart(melon_id):
         print("\n\n\n\n")
 
     else:
-        cart = session["cart"]
-        session["cart"] = {}
+        #this case is where cart does NOT exist, so set it to {}
+        #make sure both cart and session["cart"] point at {}
+        cart = session["cart"] = {}
         
         print("IN ELSE STATEMENT!")
 
