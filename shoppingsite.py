@@ -6,7 +6,7 @@ put melons in a shopping cart.
 Authors: Joel Burton, Christian Fernandez, Meggie Mahnken, Katie Byers.
 """
 
-from flask import Flask, render_template, redirect, flash
+from flask import Flask, session, render_template, redirect, flash
 import jinja2
 
 import melons
@@ -28,7 +28,8 @@ app.jinja_env.undefined = jinja2.StrictUndefined
 @app.route("/")
 def index():
     """Return homepage."""
-
+    #goes to homepage.html
+    #homepage.html --> /melons route
     return render_template("homepage.html")
 
 
@@ -36,6 +37,9 @@ def index():
 def list_melons():
     """Return page showing all the melons ubermelon has to offer"""
 
+    #melons.getall() from melons.py
+    #melons.getall() returns [melon objects] and saves in melon_list
+    #pases melon-list to all_melons.html
     melon_list = melons.get_all()
     return render_template("all_melons.html",
                            melon_list=melon_list)
@@ -47,9 +51,12 @@ def show_melon(melon_id):
 
     Show all info about a melon. Also, provide a button to buy that melon.
     """
+    #all_melons.html refers to THIS route that we're in
+    #html gives us
 
-    melon = melons.get_by_id("meli")
-    print(melon)
+    melon = melons.get_by_id(melon_id)
+    print(melon)        # <Melon: cren, Crenshaw, $2.00>
+    print(type(melon))  # <class 'melons.Melon'> this is ONE Object/instance
     return render_template("melon_details.html",
                            display_melon=melon)
 
@@ -59,7 +66,6 @@ def show_shopping_cart():
     """Display content of shopping cart."""
 
     # TODO: Display the contents of the shopping cart.
-
     # The logic here will be something like:
     #
     # - get the cart dictionary from the session
@@ -75,7 +81,6 @@ def show_shopping_cart():
     #
     # Make sure your function can also handle the case wherein no cart has
     # been added to the session
-
     return render_template("cart.html")
 
 
@@ -98,7 +103,34 @@ def add_to_cart(melon_id):
     # - flash a success message
     # - redirect the user to the cart page
 
-    return "Oops! This needs to be implemented!"
+
+    #MAKE CART AS EMPTY DICTIONARY??
+    #then do add it below 
+    # cart = {}
+    # if cart not in session:
+    #     session["cart"] = {}
+
+    # else:
+    #     # cart = session.get("cart", 0)
+    #     
+    #     print("THIS THING HERE!", cart)
+
+    print(session)
+    if "cart" in session:
+        cart = session["cart"]
+        print("In if statement!")
+        print(session["cart"])
+        print("\n\n\n\n")
+
+    else:
+        cart = session["cart"]
+        session["cart"] = {}
+        
+        print("IN ELSE STATEMENT!")
+
+    cart[melon_id] = cart.get(melon_id, 0) + 1
+    print(session)
+    return render_template("cart.html")
 
 
 @app.route("/login", methods=["GET"])
